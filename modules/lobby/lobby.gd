@@ -57,7 +57,7 @@ func _discovery():
 func _get_local_ip_address() -> String:
 	var local_ips = IP.get_local_addresses()
 	for result in local_ips:
-		if not result.begins_with("127.") and not result.begins_with("0:"):
+		if result.begins_with("192.168."):
 			return result
 	return ""
 
