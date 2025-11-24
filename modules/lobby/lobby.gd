@@ -3,9 +3,10 @@ class_name Lobby extends Control
 @onready var discovery_timer:Timer = $discovery_timer
 @onready var devices:VBoxContainer = $margin/panel/scroll/devices
 
+const MULTICAST_GROUP:String = "239.255.255.250"
+
 const DISCOVERY_PASSWORD:String = "DnAGD"
 const DISCOVERY_DELIMITER:String = ";"
-const MULTICAST_GROUP:String = "224.0.0.1"
 const DISCOVERY_PORT:int = 5555
 
 const DEVICE_DATA_STATUS:String = "status"
@@ -15,7 +16,7 @@ const DEVICE_DATA_ID:String = "id"
 
 const DEVICE:PackedScene = preload("res://modules/lobby/device/device.tscn")
 
-enum Status {DISCOVERY, ALIVE, TIMEOUT, DISCONNECTED}
+enum Status {ALIVE, TIMEOUT}
 
 var _discovery_connection:PacketPeerUDP
 
@@ -36,16 +37,16 @@ func start() -> void:
 	set_process(true)
 	id = _get_local_ip_address()
 	_discovery_connection = PacketPeerUDP.new()
-	_discovery_connection.set_broadcast_enabled(true)
-	_discovery_connection.set_dest_address(MULTICAST_GROUP, DISCOVERY_PORT)
+	_discovery_connection.bind(DISCOVERY_PORT)
 	for iface in IP.get_local_interfaces():
 		if iface.addresses[0].begins_with("192.168."):
-			var bind_result:Error = _discovery_connection.join_multicast_group("224.0.0.1", iface.name)
+			var bind_result:Error = _discovery_connection.join_multicast_group(MULTICAST_GROUP, iface.name)
 			Console.write("bind_result %s" % str(bind_result))
 	discovery_timer.start()
 
 
 func _discovery():
+	_discovery_connection.set_dest_address(MULTICAST_GROUP, DISCOVERY_PORT)
 	var device_data:Dictionary = _create_device_data(id)
 	_discovery_connection.put_packet(str("%s%s%s" % [
 			DISCOVERY_PASSWORD, 
@@ -85,7 +86,7 @@ func _process(_delta):
 
 func _create_device_data(device_id:String) -> Dictionary:
 	var device_data:Dictionary = {
-		DEVICE_DATA_STATUS : Status.DISCOVERY,
+		DEVICE_DATA_STATUS : Status.ALIVE,
 		DEVICE_DATA_RECONNECTS_COUNT : 0,
 		DEVICE_DATA_IS_HOST : false,
 		DEVICE_DATA_ID : device_id

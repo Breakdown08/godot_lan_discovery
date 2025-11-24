@@ -18,14 +18,10 @@ func on_device_data_updated(device_id:String, device_data:Dictionary):
 	data = device_data
 	if device_id == id:
 		match data[Lobby.DEVICE_DATA_STATUS]:
-			Lobby.Status.DISCONNECTED:
-				status.modulate = Color.RED
 			Lobby.Status.TIMEOUT:
 				status.modulate = Color.GRAY
 			Lobby.Status.ALIVE:
 				status.modulate = Color.GREEN
-			Lobby.Status.DISCOVERY:
-				status.modulate = Color.YELLOW
 		master_tag.visible = true if device_data[Lobby.DEVICE_DATA_IS_HOST] else false
 
 
