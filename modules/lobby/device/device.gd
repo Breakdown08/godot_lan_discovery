@@ -8,7 +8,7 @@ class_name Device extends Control
 var id:String = ""
 var data:Dictionary = {}
 
-func _ready() -> void:
+func _ready():
 	name = id
 	address.text = name
 	status_timer.timeout.connect(_on_status_timer_timeout)

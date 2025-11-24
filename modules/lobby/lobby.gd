@@ -28,25 +28,26 @@ var id_table:Dictionary[String, Dictionary]
 signal device_data_updated(device_id:String, device_data:Dictionary)
 
 
-func _ready() -> void:
+func _ready():
 	set_process(false)
 	discovery_timer.timeout.connect(_discovery)
 
 
-func start() -> void:
-	set_process(true)
+func start():
 	id = _get_local_ip_address()
 	_discovery_connection = PacketPeerUDP.new()
 	_discovery_connection.bind(DISCOVERY_PORT)
 	for iface in IP.get_local_interfaces():
 		if iface.addresses[0].begins_with("192.168."):
 			var bind_result:Error = _discovery_connection.join_multicast_group(MULTICAST_GROUP, iface.name)
-			Console.write("bind_result %s" % str(bind_result))
+			Console.write("Bind interface '%s' - %s" % [iface.name, "success" if bind_result == OK else "error"])
+	_discovery_connection.set_dest_address(MULTICAST_GROUP, DISCOVERY_PORT)
+	set_process(true)
+	_discovery()
 	discovery_timer.start()
 
 
 func _discovery():
-	_discovery_connection.set_dest_address(MULTICAST_GROUP, DISCOVERY_PORT)
 	var device_data:Dictionary = _create_device_data(id)
 	_discovery_connection.put_packet(str("%s%s%s" % [
 			DISCOVERY_PASSWORD, 
@@ -54,7 +55,6 @@ func _discovery():
 			JSON.stringify(device_data)
 		]
 	).to_utf8_buffer())
-	Console.write("discovery sent '%s-%s'" % [DISCOVERY_PASSWORD, id])
 
 
 func _get_local_ip_address() -> String:
@@ -100,19 +100,3 @@ func _create_device(device_id:String, device_data:Dictionary) -> Device:
 	device.data = device_data
 	device_data_updated.connect(device.on_device_data_updated)
 	return device
-
-
-#func start() -> void:
-	#set_process(true)
-	#_discovery_connection = PacketPeerUDP.new()
-	#_discovery_connection.set_broadcast_enabled(true)
-	#var bind_result:Error = _discovery_connection.bind(DISCOVERY_PORT)
-	#Console.write("[DISCOVERY_CONNECTION]: PORT BIND RESULT: %s" % bind_result)
-	#_private_connection = PacketPeerUDP.new()
-	#_private_connection.set_broadcast_enabled(true)
-	#_private_connection.bind(port)
-	#port = _private_connection.get_local_port()
-	#id = "%s:%s" % [_get_local_ip_address(), str(port)]
-	#Console.write("Started with id %s" % id)
-	#_discovery_connection.set_dest_address(BROADCAST_MASK, DISCOVERY_PORT)
-	#discovery_timer.start()
