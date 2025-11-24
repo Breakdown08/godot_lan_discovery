@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpaeommbun7bl"]
+
+[ext_resource type="Script" uid="uid://bjnc2sc6mewti" path="res://modules/lobby/device/device.gd" id="1_r666h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r666h"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="device" type="Control"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.083333336
+offset_bottom = -90.0
+grow_horizontal = 2
+script = ExtResource("1_r666h")
+metadata/_edit_use_anchors_ = true
+
+[node name="margin" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="props" type="HBoxContainer" parent="margin"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="id" type="Label" parent="margin/props"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "127.0.0.1"
+
+[node name="master_tag" type="Label" parent="margin/props"]
+visible = false
+layout_mode = 2
+text = "MASTER"
+
+[node name="status" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -69.0
+offset_top = -20.0
+offset_right = -29.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r666h")
+
+[node name="status_timer" type="Timer" parent="."]

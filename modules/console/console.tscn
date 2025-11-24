@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://b64i6qb8kk0qn"]
+
+[ext_resource type="Script" uid="uid://bikyf12pysqq3" path="res://modules/console/console.gd" id="1_w3y38"]
+
+[node name="console" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_w3y38")
+
+[node name="margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="panel" type="Panel" parent="margin"]
+layout_mode = 2
+
+[node name="scroll" type="ScrollContainer" parent="margin/panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="console" type="TextEdit" parent="margin/panel/scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+editable = false
