@@ -5,8 +5,8 @@ class_name Lobby extends Control
 
 const DISCOVERY_PASSWORD:String = "DnAGD"
 const DISCOVERY_DELIMITER:String = ";"
-const DISCOVERY_GROUP:String = "255.255.255.255"
-const DISCOVERY_PORT:int = 4433
+const MULTICAST_GROUP:String = "224.0.0.1"
+const DISCOVERY_PORT:int = 5555
 
 const DEVICE_DATA_STATUS:String = "status"
 const DEVICE_DATA_RECONNECTS_COUNT:String = "reconnects_count"
@@ -37,9 +37,11 @@ func start() -> void:
 	id = _get_local_ip_address()
 	_discovery_connection = PacketPeerUDP.new()
 	_discovery_connection.set_broadcast_enabled(true)
-	_discovery_connection.set_dest_address(DISCOVERY_GROUP, DISCOVERY_PORT)
-	var bind_result: Error = _discovery_connection.bind(DISCOVERY_PORT)
-	Console.write("bind_result %s" % str(bind_result))
+	_discovery_connection.set_dest_address(MULTICAST_GROUP, DISCOVERY_PORT)
+	for iface in IP.get_local_interfaces():
+		if iface.addresses[0].begins_with("192.168."):
+			var bind_result:Error = _discovery_connection.join_multicast_group("224.0.0.1", iface.name)
+			Console.write("bind_result %s" % str(bind_result))
 	discovery_timer.start()
 
 
